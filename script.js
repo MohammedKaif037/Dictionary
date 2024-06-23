@@ -192,3 +192,43 @@ function logout() {
       console.error('Logout error:', error);
   });
 }
+// ... (other existing code)
+
+document.getElementById('favoritesList').addEventListener('click', function(event) {
+  if (event.target && event.target.matches('li')) {
+    const selectedWord = event.target.innerText;
+    displayWordDetailsFromFavorites(selectedWord);
+  }
+});
+
+document.getElementById('historyList').addEventListener('click', function(event) {
+  if (event.target && event.target.matches('li')) {
+    const selectedWord = event.target.innerText;
+    displayWordDetailsFromHistory(selectedWord);
+  }
+});
+
+function displayWordDetailsFromFavorites(word) {
+  // Check if word exists in the dictionary API and display details if found, otherwise show a message
+  checkAndDisplayWordDetails(word);
+}
+
+function displayWordDetailsFromHistory(word) {
+  // Check if word exists in the dictionary API and display details if found, otherwise show a message
+  checkAndDisplayWordDetails(word);
+}
+
+function checkAndDisplayWordDetails(word) {
+  fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+      .then(response => response.json())
+      .then(data => displayWordDetails(data[0]))
+      .catch(error => displayErrorMessage(word));
+}
+
+function displayErrorMessage(word) {
+  const errorContainer = document.getElementById('wordDetails');
+  errorContainer.innerHTML = `<h2>${word}</h2><p>Definition not found</p>`;
+  errorContainer.classList.remove('d-none');
+}
+
+// ... (other existing code)
