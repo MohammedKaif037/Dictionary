@@ -1,7 +1,22 @@
 // Initialize Firebase
+// Initialize Firebase
 const firebaseConfig = {
 
-  
+  apiKey: "AIzaSyDDc5HPC-UrAkAXtzhhYBpx2e-aMt3dhCE",
+
+  authDomain: "dictionary-d2dfd.firebaseapp.com",
+
+  databaseURL: "https://dictionary-d2dfd-default-rtdb.firebaseio.com",
+
+  projectId: "dictionary-d2dfd",
+
+  storageBucket: "dictionary-d2dfd.appspot.com",
+
+  messagingSenderId: "698068097802",
+
+  appId: "1:698068097802:web:fcaf21c48a091741d8f8f3",
+
+  measurementId: "G-J8XNK082N3"
 
 };
  
