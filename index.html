@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .favorite-word {
+            cursor: pointer;
+            color: #007bff;
+        }
+        .favorite-word:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Dictionary App</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item" id="userEmail" style="display: none;">
+                    <a class="nav-link" href="#" id="userEmailLink"></a>
+                </li>
+                <li class="nav-item" id="logoutItem" style="display: none;">
+                    <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                </li>
+                <li class="nav-item" id="loginItem">
+                    <a class="nav-link" href="login.html">Login</a>
+                </li>
+                <li class="nav-item" id="registerItem">
+                    <a class="nav-link" href="register.html">Register</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Dictionary App</h1>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="searchInput" placeholder="Enter a word">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="searchButton">Search</button>
+            </div>
+        </div>
+        <div id="wordDetails" class="d-none">
+            <h2 id="wordTitle"></h2>
+            <p id="wordPhonetic"></p>
+            <audio id="wordAudio" controls></audio>
+            <h4>Part of Speech:</h4>
+            <p id="wordPartOfSpeech"></p>
+            <h4>Definition:</h4>
+            <p id="wordDefinition"></p>
+            <h4>Example:</h4>
+            <p id="wordExample"></p>
+            <button class="btn btn-danger" id="favoriteButton"><i class="fas fa-heart"></i> Add to Favorites</button>
+        </div>
+        <div id="favoritesContainer" class="mt-5">
+            <h3>Your Favorites</h3>
+            <ul id="favoritesList" class="list-group"></ul>
+        </div>
+        <div id="historyContainer" class="mt-5">
+            <h3>Search History</h3>
+            <ul id="historyList" class="list-group"></ul>
+        </div>
+    </div>
+
+    <!-- Firebase and Firebase Firestore SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
