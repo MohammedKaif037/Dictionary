@@ -1,26 +1,15 @@
 // Initialize Firebase
 const firebaseConfig = {
 
-  apiKey: "AIzaSyDDc5HPC-UrAkAXtzhhYBpx2e-aMt3dhCE",
-
-  authDomain: "dictionary-d2dfd.firebaseapp.com",
-
-  databaseURL: "https://dictionary-d2dfd-default-rtdb.firebaseio.com",
-
-  projectId: "dictionary-d2dfd",
-
-  storageBucket: "dictionary-d2dfd.appspot.com",
-
-  messagingSenderId: "698068097802",
-
-  appId: "1:698068097802:web:fcaf21c48a091741d8f8f3",
-
-  measurementId: "G-J8XNK082N3"
+  
 
 };
-
+ 
 
 firebase.initializeApp(firebaseConfig);
+
+// Reference to the Firebase Realtime Database
+const database = firebase.database();
 
 // Check authentication state and update UI
 firebase.auth().onAuthStateChanged(function(user) {
@@ -30,6 +19,10 @@ firebase.auth().onAuthStateChanged(function(user) {
       document.getElementById('loginItem').style.display = 'none';
       document.getElementById('registerItem').style.display = 'none';
       document.getElementById('userEmailLink').innerText = user.email;
+      
+      // Load user's favorites and search history
+      loadFavorites(user.uid);
+      loadSearchHistory(user.uid);
   } else {
       document.getElementById('userEmail').style.display = 'none';
       document.getElementById('logoutItem').style.display = 'none';
@@ -77,12 +70,14 @@ function addToFavorites() {
   if (!favorites.includes(word)) {
       favorites.push(word);
       displayFavorites();
+      storeFavorites(firebase.auth().currentUser.uid);
   }
 }
 
 function removeFromFavorites(word) {
   favorites = favorites.filter(fav => fav !== word);
   displayFavorites();
+  storeFavorites(firebase.auth().currentUser.uid);
 }
 
 function displayFavorites() {
@@ -105,6 +100,7 @@ function addToSearchHistory(word) {
   if (!searchHistory.includes(word)) {
       searchHistory.push(word);
       displaySearchHistory();
+      storeSearchHistory(firebase.auth().currentUser.uid);
   }
 }
 
@@ -116,6 +112,32 @@ function displaySearchHistory() {
       li.className = 'list-group-item';
       li.innerText = word;
       historyList.appendChild(li);
+  });
+}
+
+function storeFavorites(userId) {
+  database.ref('users/' + userId + '/favorites').set(favorites);
+}
+
+function storeSearchHistory(userId) {
+  database.ref('users/' + userId + '/searchHistory').set(searchHistory);
+}
+
+function loadFavorites(userId) {
+  database.ref('users/' + userId + '/favorites').once('value').then(snapshot => {
+      if (snapshot.exists()) {
+          favorites = snapshot.val();
+          displayFavorites();
+      }
+  });
+}
+
+function loadSearchHistory(userId) {
+  database.ref('users/' + userId + '/searchHistory').once('value').then(snapshot => {
+      if (snapshot.exists()) {
+          searchHistory = snapshot.val();
+          displaySearchHistory();
+      }
   });
 }
 
