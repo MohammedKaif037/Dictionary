@@ -1,25 +1,14 @@
 // Initialize Firebase
-// Initialize Firebase
 const firebaseConfig = {
-
   apiKey: "AIzaSyDDc5HPC-UrAkAXtzhhYBpx2e-aMt3dhCE",
-
   authDomain: "dictionary-d2dfd.firebaseapp.com",
-
   databaseURL: "https://dictionary-d2dfd-default-rtdb.firebaseio.com",
-
   projectId: "dictionary-d2dfd",
-
   storageBucket: "dictionary-d2dfd.appspot.com",
-
   messagingSenderId: "698068097802",
-
   appId: "1:698068097802:web:fcaf21c48a091741d8f8f3",
-
   measurementId: "G-J8XNK082N3"
-
 };
- 
 
 firebase.initializeApp(firebaseConfig);
 
@@ -29,20 +18,20 @@ const database = firebase.database();
 // Check authentication state and update UI
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-      document.getElementById('userEmail').style.display = 'block';
-      document.getElementById('logoutItem').style.display = 'block';
-      document.getElementById('loginItem').style.display = 'none';
-      document.getElementById('registerItem').style.display = 'none';
-      document.getElementById('userEmailLink').innerText = user.email;
-      
-      // Load user's favorites and search history
-      loadFavorites(user.uid);
-      loadSearchHistory(user.uid);
+    document.getElementById('userEmail').style.display = 'block';
+    document.getElementById('logoutItem').style.display = 'block';
+    document.getElementById('loginItem').style.display = 'none';
+    document.getElementById('registerItem').style.display = 'none';
+    document.getElementById('userEmailLink').innerText = user.email;
+
+    // Load user's favorites and search history
+    loadFavorites(user.uid);
+    loadSearchHistory(user.uid);
   } else {
-      document.getElementById('userEmail').style.display = 'none';
-      document.getElementById('logoutItem').style.display = 'none';
-      document.getElementById('loginItem').style.display = 'block';
-      document.getElementById('registerItem').style.display = 'block';
+    document.getElementById('userEmail').style.display = 'none';
+    document.getElementById('logoutItem').style.display = 'none';
+    document.getElementById('loginItem').style.display = 'block';
+    document.getElementById('registerItem').style.display = 'block';
   }
 });
 
@@ -57,9 +46,9 @@ function searchWord() {
   if (word === '') return;
 
   fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-      .then(response => response.json())
-      .then(data => displayWordDetails(data[0]))
-      .catch(error => console.error('Error fetching word data:', error));
+    .then(response => response.json())
+    .then(data => displayWordDetails(data[0]))
+    .catch(error => displayErrorMessage(word));
 
   addToSearchHistory(word);
 }
@@ -68,10 +57,10 @@ function displayWordDetails(data) {
   document.getElementById('wordTitle').innerText = data.word;
   document.getElementById('wordPhonetic').innerText = data.phonetic;
   if (data.phonetics && data.phonetics[0] && data.phonetics[0].audio) {
-      document.getElementById('wordAudio').src = data.phonetics[0].audio;
-      document.getElementById('wordAudio').style.display = 'block';
+    document.getElementById('wordAudio').src = data.phonetics[0].audio;
+    document.getElementById('wordAudio').style.display = 'block';
   } else {
-      document.getElementById('wordAudio').style.display = 'none';
+    document.getElementById('wordAudio').style.display = 'none';
   }
   document.getElementById('wordPartOfSpeech').innerText = data.meanings.map(meaning => meaning.partOfSpeech).join(', ');
   document.getElementById('wordDefinition').innerText = data.meanings.map(meaning => meaning.definitions.map(def => def.definition).join(', ')).join('; ');
@@ -83,9 +72,9 @@ function displayWordDetails(data) {
 function addToFavorites() {
   const word = document.getElementById('wordTitle').innerText;
   if (!favorites.includes(word)) {
-      favorites.push(word);
-      displayFavorites();
-      storeFavorites(firebase.auth().currentUser.uid);
+    favorites.push(word);
+    displayFavorites();
+    storeFavorites(firebase.auth().currentUser.uid);
   }
 }
 
@@ -99,23 +88,24 @@ function displayFavorites() {
   const favoritesList = document.getElementById('favoritesList');
   favoritesList.innerHTML = '';
   favorites.forEach(word => {
-      const li = document.createElement('li');
-      li.className = 'list-group-item d-flex justify-content-between align-items-center';
-      li.innerText = word;
-      const removeButton = document.createElement('button');
-      removeButton.className = 'btn btn-danger btn-sm';
-      removeButton.innerHTML = '<i class="fas fa-heart-broken"></i>';
-      removeButton.onclick = () => removeFromFavorites(word);
-      li.appendChild(removeButton);
-      favoritesList.appendChild(li);
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+    li.innerText = word;
+    const removeButton = document.createElement('button');
+    removeButton.className = 'btn btn-danger btn-sm';
+    removeButton.innerHTML = '<i class="fas fa-heart-broken"></i>';
+    removeButton.onclick = () => removeFromFavorites(word);
+    li.appendChild(removeButton);
+    li.onclick = () => displayWordDetailsFromHistoryOrFavorites(word); // Add click event to display details
+    favoritesList.appendChild(li);
   });
 }
 
 function addToSearchHistory(word) {
   if (!searchHistory.includes(word)) {
-      searchHistory.push(word);
-      displaySearchHistory();
-      storeSearchHistory(firebase.auth().currentUser.uid);
+    searchHistory.push(word);
+    displaySearchHistory();
+    storeSearchHistory(firebase.auth().currentUser.uid);
   }
 }
 
@@ -123,10 +113,11 @@ function displaySearchHistory() {
   const historyList = document.getElementById('historyList');
   historyList.innerHTML = '';
   searchHistory.forEach(word => {
-      const li = document.createElement('li');
-      li.className = 'list-group-item';
-      li.innerText = word;
-      historyList.appendChild(li);
+    const li = document.createElement('li');
+    li.className = 'list-group-item';
+    li.innerText = word;
+    li.onclick = () => displayWordDetailsFromHistoryOrFavorites(word); // Add click event to display details
+    historyList.appendChild(li);
   });
 }
 
@@ -140,19 +131,19 @@ function storeSearchHistory(userId) {
 
 function loadFavorites(userId) {
   database.ref('users/' + userId + '/favorites').once('value').then(snapshot => {
-      if (snapshot.exists()) {
-          favorites = snapshot.val();
-          displayFavorites();
-      }
+    if (snapshot.exists()) {
+      favorites = snapshot.val();
+      displayFavorites();
+    }
   });
 }
 
 function loadSearchHistory(userId) {
   database.ref('users/' + userId + '/searchHistory').once('value').then(snapshot => {
-      if (snapshot.exists()) {
-          searchHistory = snapshot.val();
-          displaySearchHistory();
-      }
+    if (snapshot.exists()) {
+      searchHistory = snapshot.val();
+      displaySearchHistory();
+    }
   });
 }
 
@@ -161,74 +152,120 @@ function login() {
   const password = document.getElementById('passcode').value;
 
   firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(userCredential => {
-          console.log('Logged in:', userCredential.user.email);
-          window.location.href = 'index.html';
-      })
-      .catch(error => {
-          console.error('Login error:', error);
-      });
+    .then(userCredential => {
+      console.log('Logged in:', userCredential.user.email);
+      window.location.href = 'index.html';
+    })
+    .catch(error => {
+      console.error('Login error:', error);
+      displayLoginErrorMessage();
+    });
+}
+
+function displayLoginErrorMessage() {
+  alert("Invalid credentials");
 }
 
 function register() {
   const email = document.getElementById('registerEmail').value;
   const password = document.getElementById('registerPasscode').value;
+  const errorContainer = document.getElementById('registerError');
 
   firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(userCredential => {
-          console.log('Registered:', userCredential.user.email);
-          window.location.href = 'login.html'; // Redirect to login page after successful registration
-      })
-      .catch(error => {
-          console.error('Registration error:', error);
-      });
+    .then(userCredential => {
+      console.log('Registered:', userCredential.user.email);
+      window.location.href = 'login.html'; // Redirect to login page after successful registration
+    })
+    .catch(error => {
+      console.error('Registration error:', error);
+      displayRegistrationErrorMessage(error, errorContainer);
+    });
 }
+
+function login() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('passcode').value;
+  const errorContainer = document.getElementById('loginError');
+
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(userCredential => {
+      console.log('Logged in:', userCredential.user.email);
+      window.location.href = 'index.html';
+    })
+    .catch(error => {
+      console.error('Login error:', error);
+      displayLoginErrorMessage(error, errorContainer);
+    });
+}
+
+function displayRegistrationErrorMessage(error, errorContainer) {
+  let errorMessage = 'Registration error. Please try again.';
+  
+  if (error.code === 'auth/email-already-in-use') {
+    errorMessage = 'The email address is already in use by another account.';
+  } else if (error.code === 'auth/invalid-email') {
+    errorMessage = 'The email address is not valid.';
+  } else if (error.code === 'auth/weak-password') {
+    errorMessage = 'The password is too weak.';
+  }
+  
+  errorContainer.innerText = errorMessage;
+  errorContainer.style.display = 'block';
+}
+
+function displayLoginErrorMessage(error, errorContainer) {
+  let errorMessage = 'Login error. Please try again.';
+
+  if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+    errorMessage = 'Invalid credentials.';
+  } else if (error.code === 'auth/invalid-email') {
+    errorMessage = 'The email address is not valid.';
+  }
+  
+  errorContainer.innerText = errorMessage;
+  errorContainer.style.display = 'block';
+}
+
+
 
 function logout() {
   firebase.auth().signOut().then(() => {
-      console.log('Logged out');
-      window.location.href = 'index.html';
+    console.log('Logged out');
+    window.location.href = 'index.html';
   }).catch(error => {
-      console.error('Logout error:', error);
+    console.error('Logout error:', error);
   });
 }
-// ... (other existing code)
 
 document.getElementById('favoritesList').addEventListener('click', function(event) {
   if (event.target && event.target.matches('li')) {
     const selectedWord = event.target.innerText;
-    displayWordDetailsFromFavorites(selectedWord);
+    displayWordDetailsFromHistoryOrFavorites(selectedWord);
   }
 });
 
 document.getElementById('historyList').addEventListener('click', function(event) {
   if (event.target && event.target.matches('li')) {
     const selectedWord = event.target.innerText;
-    displayWordDetailsFromHistory(selectedWord);
+    displayWordDetailsFromHistoryOrFavorites(selectedWord);
   }
 });
 
-function displayWordDetailsFromFavorites(word) {
-  // Check if word exists in the dictionary API and display details if found, otherwise show a message
-  checkAndDisplayWordDetails(word);
-}
-
-function displayWordDetailsFromHistory(word) {
-  // Check if word exists in the dictionary API and display details if found, otherwise show a message
-  checkAndDisplayWordDetails(word);
-}
-
-function checkAndDisplayWordDetails(word) {
+function displayWordDetailsFromHistoryOrFavorites(word) {
   fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-      .then(response => response.json())
-      .then(data => displayWordDetails(data[0]))
-      .catch(error => displayErrorMessage(word));
+    .then(response => response.json())
+    .then(data => {
+      if (data.title && data.title === "No Definitions Found") {
+        displayErrorMessage(word);
+      } else {
+        displayWordDetails(data[0]);
+      }
+    })
+    .catch(error => displayErrorMessage(word));
 }
 
 function displayErrorMessage(word) {
   const errorContainer = document.getElementById('wordDetails');
-  errorContainer.innerHTML = `<h2>${word}</h2><p>Definition not found</p>`;
+  errorContainer.innerHTML = `<h2>${word}</h2><p>Word not found</p>`;
   errorContainer.classList.remove('d-none');
 }
-
-// ... (other existing code)
