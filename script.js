@@ -1,25 +1,19 @@
 // Initialize Firebase
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyB3rkUChdMTuG1JMC3CvUMDlO7UOISiFOc",
-  authDomain: "dictionaryapp-7aaf7.firebaseapp.com",
-  projectId: "dictionaryapp-7aaf7",
-  storageBucket: "dictionaryapp-7aaf7.appspot.com",
-  messagingSenderId: "747067787555",
-  appId: "1:747067787555:web:ceeb40628f211859196496",
-  measurementId: "G-52CJ0B7F94"
+  apiKey: "AIzaSyDDc5HPC-UrAkAXtzhhYBpx2e-aMt3dhCE",
+  authDomain: "dictionary-d2dfd.firebaseapp.com",
+  databaseURL: "https://dictionary-d2dfd-default-rtdb.firebaseio.com",
+  projectId: "dictionary-d2dfd",
+  storageBucket: "dictionary-d2dfd.appspot.com",
+  messagingSenderId: "698068097802",
+  appId: "1:698068097802:web:fcaf21c48a091741d8f8f3",
+  measurementId: "G-J8XNK082N3"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+firebase.initializeApp(firebaseConfig);
+
+// Reference to the Firebase Realtime Database
+const database = firebase.database();
 
 // Check authentication state and update UI
 firebase.auth().onAuthStateChanged(function(user) {
